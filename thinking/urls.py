@@ -16,6 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from thoughts.views import home, post_detail
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', home),
+    path('posts/<int:post_id>', post_detail),
 ]
