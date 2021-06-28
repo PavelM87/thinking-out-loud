@@ -5,5 +5,56 @@
 {% endblock title %}
 
 {% block content %}
-<h1>Здесь мыслят вслух</h1> 
+
+<div class="row text-center">
+    <div class="col">
+        <h1>
+            Мысли вслух
+        </h1>
+    </div>
+</div>
+
+<div class="row" id="posts">
+    щтото
+</div>
+
+<script>
+    const postsElements = document.getElementById("posts")
+    postsElements.innerHTML = 'Грузится...'
+
+    const xhr = new XMLHttpRequest()
+    const method = 'GET'
+    const url = '/posts'
+    const responseType = 'json'
+
+    function handleDidLike (post_id, currentCount) {
+        console.log(post_id, currentCount)
+        return
+    }
+
+    function likeBtn(post) {
+        return `<button class="btn btn-primary" onclick="handleDidLike(${post.id}, ${post.likes})">${post.likes} Likes</button>`
+    }
+
+    function formatPostElement(post) {
+        var formattedPost = `<div class='col-12 col-md-10 mx-auto border rounded py-3 mb-4 post' id='post-${post.id}'><p>${post.content}</p><div class="btn-group">${likeBtn(post)}</div></div>`
+        return formattedPost
+    }
+    xhr.responseType = responseType
+    xhr.open(method, url)
+    xhr.onload = function() {
+        const serverResponse = xhr.response
+        var listedItems = serverResponse.response
+        var finalPostStr = ""
+        var i;
+        for (i=0; i<listedItems.length; i++) {
+            var postObj = listedItems[i]
+            var currentItem = formatPostElement(postObj)
+            finalPostStr += currentItem
+        }
+        postsElements.innerHTML = finalPostStr
+        // console.log(listedItems)
+    }
+    xhr.send()
+</script>
 {% endblock content %}
