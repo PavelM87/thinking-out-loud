@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Мысли вслух!
+Мысли вслух! 
 {% endblock title %}
 
 {% block content %}
@@ -14,32 +14,91 @@
     </div>
 </div>
 
+<div class="row mb-3">
+    <div class="col-md-4 mx-auto col-10">
+        <form method="POST" id="post-create-form" class="form" action="/create-post">
+            {% csrf_token %}
+            <div class="d-none alert alert-danger" id="post-create-form-error"></div>
+            <input type="hidden" value="/" name="next"/>
+            <textarea required='required' name="content" placeholder="Твой пост" class="form-control"></textarea>
+            <button class="btn btn-primary" type="submit">Поделюсь</button>
+        </form>
+    </div>
+</div>
+
 <div class="row" id="posts">
-    щтото
+
 </div>
 
 <script>
-    const postsElements = document.getElementById("posts")
-    postsElements.innerHTML = 'Грузится...'
 
+function handlePostFormError(msg, display) {
+    var myErrorDiv = document.getElementById("post-create-form-error")
+    if (display === true) {
+        // show error
+        myErrorDiv.setAttribute("class", "d-block alert alert-danger")
+        myErrorDiv.innerText = msg
+    } else {
+        // hide error
+        myErrorDiv.setAttribute("class", "d-none alert alert-danger")
+    }
+}
+
+function handlePostCreateFormDidSubmit(event) {
+    event.preventDefault()
+    const myForm = event.target
+    const myFormData = new FormData(myForm)
+    const url = myForm.getAttribute('action')
+    const method = myForm.getAttribute('method')
+    const xhr = new XMLHttpRequest()
+    const responseType = 'json'
+    xhr.responseType = responseType
+    xhr.open(method, url)
+    xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
+    xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+    xhr.onload = function() {
+        if (xhr.status ===201) {
+            handlePostFormError("", false)
+            const newPostJson = xhr.response
+            const newPostElement = formatPostElement(newPostJson)
+            const ogHtml = postsContainerElement.innerHTML
+            postsContainerElement.innerHTML = newPostElement + ogHtml
+            myForm.reset()
+        } else if (xhr.status === 400) {
+            const errorJson = xhr.response
+            const contentError = errorJson.content
+            let contentErrorMsg;
+            if (contentError) {
+                contentErrorMsg = contentError[0]
+                if (contentErrorMsg) {
+                    handlePostFormError(contentErrorMsg, true)
+                } else {
+                    alert("Ошибка. Попробуйте еще раз!")
+                }
+            } else {
+                alert("Ошибка. Попробуйте еще раз!")
+            }
+        } else if (xhr.status === 500) {
+            alert("Ошибка сервера.")
+        }
+    }
+    xhr.onerror = function() {
+        alert("Ошибочка вышла...")
+    }
+    xhr.send(myFormData)
+}
+const postCreateFormEl = document.getElementById('post-create-form')
+
+postCreateFormEl.addEventListener('submit', handlePostCreateFormDidSubmit)
+
+const postsContainerElement = document.getElementById("posts")
+    
+function loadPosts(postsElement) {
     const xhr = new XMLHttpRequest()
     const method = 'GET'
     const url = '/posts'
     const responseType = 'json'
 
-    function handleDidLike (post_id, currentCount) {
-        console.log(post_id, currentCount)
-        return
-    }
-
-    function likeBtn(post) {
-        return `<button class="btn btn-primary" onclick="handleDidLike(${post.id}, ${post.likes})">${post.likes} Likes</button>`
-    }
-
-    function formatPostElement(post) {
-        var formattedPost = `<div class='col-12 col-md-10 mx-auto border rounded py-3 mb-4 post' id='post-${post.id}'><p>${post.content}</p><div class="btn-group">${likeBtn(post)}</div></div>`
-        return formattedPost
-    }
     xhr.responseType = responseType
     xhr.open(method, url)
     xhr.onload = function() {
@@ -51,10 +110,29 @@
             var postObj = listedItems[i]
             var currentItem = formatPostElement(postObj)
             finalPostStr += currentItem
-        }
-        postsElements.innerHTML = finalPostStr
-        // console.log(listedItems)
     }
-    xhr.send()
+    postsElement.innerHTML = finalPostStr
+}
+xhr.send()
+}
+
+loadPosts(postsContainerElement)
+
+
+
+function handleDidLike (post_id, currentCount) {
+    console.log(post_id, currentCount)
+    return
+}
+
+function likeBtn(post) {
+    return `<button class="btn btn-primary" onclick="handleDidLike(${post.id}, ${post.likes})">${post.likes} Likes</button>`
+}
+
+function formatPostElement(post) {
+    var formattedPost = `<div class='col-12 col-md-10 mx-auto border rounded py-3 mb-4 post' id='post-${post.id}'><p>${post.content}</p><div class="btn-group">${likeBtn(post)}</div></div>`
+    return formattedPost
+}
+
 </script>
 {% endblock content %}
