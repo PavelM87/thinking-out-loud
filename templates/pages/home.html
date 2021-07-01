@@ -80,6 +80,9 @@ function handlePostCreateFormDidSubmit(event) {
             }
         } else if (xhr.status === 500) {
             alert("Ошибка сервера.")
+        } else if (xhr.status === 401) {
+            alert("Ты должен быть авторизован!")
+            window.location.href = "/login"
         }
     }
     xhr.onerror = function() {
@@ -103,7 +106,7 @@ function loadPosts(postsElement) {
     xhr.open(method, url)
     xhr.onload = function() {
         const serverResponse = xhr.response
-        var listedItems = serverResponse.response
+        var listedItems = serverResponse
         var finalPostStr = ""
         var i;
         for (i=0; i<listedItems.length; i++) {
