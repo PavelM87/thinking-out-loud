@@ -129,7 +129,10 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# CUSTOM SETTINGS
+
 MAX_POST_LENGTH = 240
+POST_ACTION_OPTIONS = ["like", "unlike", "repost"]
 
 DEFAULT_RENDERER_CLASSES = [
     'rest_framework.renderers.JSONRenderer',

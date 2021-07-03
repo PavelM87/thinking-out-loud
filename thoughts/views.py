@@ -4,6 +4,7 @@ from django.conf import settings
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404, JsonResponse
 from django.utils.http import is_safe_url
+from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -11,7 +12,7 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 
 from .models import Post
 from .forms import PostForm
-from .serializers import PostSerializer
+from .serializers import PostSerializer, PostActionSerializer
 
 ALLOWED_HOSTS = settings.ALLOWED_HOSTS
 
@@ -49,6 +50,29 @@ def post_delete(request, post_id, *args, **kwargs):
         return Response({"message": "Ты не можешь удалить этот пост"}, status=404)
     obj = qs.first()
     obj.delete()
+    return Response({"message": "Пост удален"}, status=200)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def post_action(request, *args, **kwargs):
+    '''
+    Действия: Лайк, дизлайк, репост
+    '''
+    serializer = PostActionSerializer(request.POST)
+    if serializer.is_valid(raise_exception=True):
+        data = serializer.validated_data
+        post_id = data.get("id")
+        action = data.get("action")
+        qs = Post.objects.filter(id=post_id)
+        if not qs.exists():
+            return Response({}, status=404)
+        obj = qs.first()
+        if action == "like":
+            obj.likes.add(request.user)
+        elif action == "unlike":
+            obj.likes.remove(request.user)
+        elif action == "repost":
+            pass
     return Response({"message": "Пост удален"}, status=200)
 
 @api_view(['GET'])
