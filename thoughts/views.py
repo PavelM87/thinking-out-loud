@@ -12,7 +12,7 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 
 from .models import Post
 from .forms import PostForm
-from .serializers import PostSerializer, PostActionSerializer
+from .serializers import PostSerializer, PostActionSerializer, PostCreateSerializer
 
 ALLOWED_HOSTS = settings.ALLOWED_HOSTS
 
@@ -24,7 +24,7 @@ def home(request, *args, **kwargs):
 # @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def post_create(request, *args, **kwargs):
-    serializer = PostSerializer(data=request.POST)
+    serializer = PostCreateSerializer(data=request.POST)
     if serializer.is_valid(raise_exception=True):
        serializer.save(user=request.user)
        return Response(serializer.data, status=201)
@@ -63,6 +63,7 @@ def post_action(request, *args, **kwargs):
         data = serializer.validated_data
         post_id = data.get("id")
         action = data.get("action")
+        content = data.get("content")
         qs = Post.objects.filter(id=post_id)
         if not qs.exists():
             return Response({}, status=404)
@@ -74,7 +75,9 @@ def post_action(request, *args, **kwargs):
         elif action == "unlike":
             obj.likes.remove(request.user)
         elif action == "repost":
-            pass
+            new_post = Post.objects.create(user=request.user, parent=obj, content=content)
+            serializer = PostSerializer(new_post)
+            return Response(serializer.data, status=200)
     return Response({}, status=200)
 
 @api_view(['GET'])

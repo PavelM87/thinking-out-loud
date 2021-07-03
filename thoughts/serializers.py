@@ -7,6 +7,7 @@ from .models import Post
 class PostActionSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     action = serializers.CharField()
+    content = serializers.CharField(allow_blank=True, required=False)
 
     def validate_actions(self, value):
         value = value.lower().strip()
@@ -14,8 +15,9 @@ class PostActionSerializer(serializers.Serializer):
             raise serializers.ValidationError("Некорректное действие")
         return value
 
-class PostSerializer(serializers.ModelSerializer):
+class PostCreateSerializer(serializers.ModelSerializer):
     likes = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Post
         fields = ['id', 'content', 'likes']
@@ -25,5 +27,18 @@ class PostSerializer(serializers.ModelSerializer):
 
     def validate_content(self, value):
         if len(value) > settings.MAX_POST_LENGTH:
-            raise serializers.ValidationError("Короче, пожалста!")
+            raise serializers.ValidationError("Слишком длинный пост")
         return value
+
+class PostSerializer(serializers.ModelSerializer):
+    likes = serializers.SerializerMethodField(read_only=True)
+    parent = PostCreateSerializer(read_only=True)
+
+    class Meta:
+        model = Post
+        fields = ['id', 'content', 'likes', 'is_repost', 'parent']
+
+    def get_likes(self, obj):
+        return obj.likes.count()
+
+    
