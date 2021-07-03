@@ -80,7 +80,7 @@ function handlePostCreateFormDidSubmit(event) {
             }
         } else if (xhr.status === 500) {
             alert("Ошибка сервера.")
-        } else if (xhr.status === 401) {
+        } else if (xhr.status === 403) {
             alert("Ты должен быть авторизован!")
             window.location.href = "/login"
         }
