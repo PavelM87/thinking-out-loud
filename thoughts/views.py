@@ -58,7 +58,7 @@ def post_action(request, *args, **kwargs):
     '''
     Действия: Лайк, дизлайк, репост
     '''
-    serializer = PostActionSerializer(data=request.POST)
+    serializer = PostActionSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
         data = serializer.validated_data
         post_id = data.get("id")
@@ -69,11 +69,13 @@ def post_action(request, *args, **kwargs):
         obj = qs.first()
         if action == "like":
             obj.likes.add(request.user)
+            serializer = PostSerializer(obj)            
+            return Response(serializer.data, status=200)
         elif action == "unlike":
             obj.likes.remove(request.user)
         elif action == "repost":
             pass
-    return Response({"message": "Пост удален"}, status=200)
+    return Response({}, status=200)
 
 @api_view(['GET'])
 def post_list(request, *args, **kwargs):
