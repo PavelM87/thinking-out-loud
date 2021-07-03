@@ -47,7 +47,7 @@ def post_delete(request, post_id, *args, **kwargs):
         return Response({}, status=404)
     qs = qs.filter(user=request.user)
     if not qs.exists():
-        return Response({"message": "Ты не можешь удалить этот пост"}, status=404)
+        return Response({"message": "Ты не можешь удалить этот пост"}, status=401)
     obj = qs.first()
     obj.delete()
     return Response({"message": "Пост удален"}, status=200)
@@ -74,10 +74,12 @@ def post_action(request, *args, **kwargs):
             return Response(serializer.data, status=200)
         elif action == "unlike":
             obj.likes.remove(request.user)
+            serializer = PostSerializer(obj)            
+            return Response(serializer.data, status=200)
         elif action == "repost":
             new_post = Post.objects.create(user=request.user, parent=obj, content=content)
             serializer = PostSerializer(new_post)
-            return Response(serializer.data, status=200)
+            return Response(serializer.data, status=201)
     return Response({}, status=200)
 
 @api_view(['GET'])
