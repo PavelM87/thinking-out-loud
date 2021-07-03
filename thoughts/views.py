@@ -38,6 +38,19 @@ def post_detail(request, post_id, *args, **kwargs):
     serializer = PostSerializer(obj)
     return Response(serializer.data, status=200)
 
+@api_view(['DELETE', 'POST'])
+@permission_classes([IsAuthenticated])
+def post_delete(request, post_id, *args, **kwargs):
+    qs = Post.objects.filter(id=post_id)
+    if not qs.exists():
+        return Response({}, status=404)
+    qs = qs.filter(user=request.user)
+    if not qs.exists():
+        return Response({"message": "Ты не можешь удалить этот пост"}, status=404)
+    obj = qs.first()
+    obj.delete()
+    return Response({"message": "Пост удален"}, status=200)
+
 @api_view(['GET'])
 def post_list(request, *args, **kwargs):
     qs = Post.objects.all()
