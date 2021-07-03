@@ -15,9 +15,13 @@ class PostActionSerializer(serializers.Serializer):
         return value
 
 class PostSerializer(serializers.ModelSerializer):
+    likes = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = Post
-        fields = ['content']
+        fields = ['id', 'content', 'likes']
+
+    def get_likes(self, obj):
+        return obj.likes.count()
 
     def validate_content(self, value):
         if len(value) > settings.MAX_POST_LENGTH:

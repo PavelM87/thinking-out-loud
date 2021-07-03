@@ -58,7 +58,7 @@ def post_action(request, *args, **kwargs):
     '''
     Действия: Лайк, дизлайк, репост
     '''
-    serializer = PostActionSerializer(request.POST)
+    serializer = PostActionSerializer(data=request.POST)
     if serializer.is_valid(raise_exception=True):
         data = serializer.validated_data
         post_id = data.get("id")
