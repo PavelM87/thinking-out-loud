@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-ekijz3ymntlhjl989tny45=)=qba%i$%#cka-afpon3*ugfn&m
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 LOGIN_URL = "/login"
 
 
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'corsheaders',
 
     'thoughts',
 ]
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -133,6 +135,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MAX_POST_LENGTH = 240
 POST_ACTION_OPTIONS = ["like", "unlike", "repost"]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 DEFAULT_RENDERER_CLASSES = [
     'rest_framework.renderers.JSONRenderer',
