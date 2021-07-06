@@ -4,10 +4,17 @@ import {loadPosts} from '../lookup'
 
 export function PostsComponent(props) {
   const textAreaRef = React.createRef()
+  const [newPosts, setNewPosts] = useState([])
   const handleSubmit = (event) => { 
     event.preventDefault()
-    console.log(event)
     const newValue = textAreaRef.current.value
+    let tempNewPosts = [...newPosts]
+    tempNewPosts.unshift({
+      content: newValue,
+      likes: 0,
+      id: 2121
+    })
+    setNewPosts(tempNewPosts)
     textAreaRef.current.value = ''
   }
   return <div className={props.className}>
@@ -18,24 +25,30 @@ export function PostsComponent(props) {
         <button type='submit' className='btn btn-primary my-3'>Post</button>
       </form>
     </div>
-    <PostsList/> 
+    <PostsList newPosts={newPosts}/> 
   </div>
 }
 
 export function PostsList(props) {
+    const [postsInit, setPostsInit] = useState([])
     const [posts, setPosts] = useState([])
-  
+    useEffect(()=>{
+      let final = [...props.newPosts].concat(postsInit)
+      if (final.length !== posts.length) {
+        setPosts(final)
+      }
+    }, [props.newPosts, posts, postsInit])
+
     useEffect(() => {
       const myCallback = (response, status) => {
-        console.log(response, status)
         if (status === 200){
-          setPosts(response)
+          setPostsInit(response)
         } else {
           alert("Ошибка же")
         }
       }
       loadPosts(myCallback)
-      }, [])
+      }, [postsInit])
       return posts.map((post, index)=>{
         return <Post post={post} className='my-5 py-5 border bg-white text-dark' key={`${index}-{item.id}`}/>
       })

@@ -2,14 +2,29 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import {PostsComponent} from './posts';
 import reportWebVitals from './reportWebVitals';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+
+const appElement = document.getElementById('root')
+if (appElement) {
+  ReactDOM.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>,
+    appElement
+  );
+}
+const postsEl = document.getElementById("thinking")
+if (postsEl) {
+  ReactDOM.render(
+    <React.StrictMode>
+      <PostsComponent />
+    </React.StrictMode>,
+    postsEl
+  );
+}
+
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
