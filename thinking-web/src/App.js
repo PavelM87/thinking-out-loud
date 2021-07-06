@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import {PostsList} from './posts'
+import {PostsComponent} from './posts'
 
 
 function App() {
@@ -13,7 +13,7 @@ function App() {
           Edit <code>src/App.js</code> and save to reload.
         </p>
         <div>
-          <PostsList />
+          <PostsComponent />
         </div>
         <a
           className="App-link"
