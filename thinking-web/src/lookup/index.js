@@ -1,5 +1,6 @@
-import {loadPosts} from './components'
+import {createPost, loadPosts} from './components'
 
 export {
-    loadPosts
+    loadPosts,
+    createPost
 }

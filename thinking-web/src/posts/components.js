@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 
-import {loadPosts} from '../lookup'
+import {createPost, loadPosts} from '../lookup'
 
 export function PostsComponent(props) {
   const textAreaRef = React.createRef()
@@ -9,10 +9,14 @@ export function PostsComponent(props) {
     event.preventDefault()
     const newValue = textAreaRef.current.value
     let tempNewPosts = [...newPosts]
-    tempNewPosts.unshift({
-      content: newValue,
-      likes: 0,
-      id: 2121
+    // измени это на вызов на стороне сервера
+    createPost(newValue, (response, status)=>{
+      if (status === 201){
+        tempNewPosts.unshift(response)
+      } else {
+        console.log(response)
+        alert("Произошла ошибка, попробуйте еще раз")
+      }
     })
     setNewPosts(tempNewPosts)
     textAreaRef.current.value = ''
