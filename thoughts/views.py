@@ -24,7 +24,7 @@ def home(request, *args, **kwargs):
 # @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def post_create(request, *args, **kwargs):
-    serializer = PostCreateSerializer(data=request.POST)
+    serializer = PostCreateSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
        serializer.save(user=request.user)
        return Response(serializer.data, status=201)

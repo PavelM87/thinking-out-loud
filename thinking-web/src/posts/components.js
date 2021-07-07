@@ -5,20 +5,22 @@ import {createPost, loadPosts} from '../lookup'
 export function PostsComponent(props) {
   const textAreaRef = React.createRef()
   const [newPosts, setNewPosts] = useState([])
+  const handleBackendUpdate = (response, status) =>{
+    // backend api response handler
+    let tempNewPosts = [...newPosts]
+    if (status === 201){
+      tempNewPosts.unshift(response)
+      setNewPosts(tempNewPosts)
+    } else {
+      console.log(response)
+      alert("Произошла ошибка, попробуйте еще раз")
+    }
+  }
   const handleSubmit = (event) => { 
     event.preventDefault()
     const newValue = textAreaRef.current.value
-    let tempNewPosts = [...newPosts]
-    // измени это на вызов на стороне сервера
-    createPost(newValue, (response, status)=>{
-      if (status === 201){
-        tempNewPosts.unshift(response)
-      } else {
-        console.log(response)
-        alert("Произошла ошибка, попробуйте еще раз")
-      }
-    })
-    setNewPosts(tempNewPosts)
+    // backend api request
+    createPost(newValue, handleBackendUpdate)
     textAreaRef.current.value = ''
   }
   return <div className={props.className}>
