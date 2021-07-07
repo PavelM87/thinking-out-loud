@@ -27,7 +27,7 @@ from thoughts.views import (
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home),
-    path('react/', TemplateView.as_view(template_name='react.html')),
+    path('react/', TemplateView.as_view(template_name='react_dj.html')),
     path('create-post', post_create),
     path('posts', post_list),
     path('posts/<int:post_id>', post_detail),

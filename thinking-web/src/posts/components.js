@@ -32,6 +32,7 @@ export function PostsComponent(props) {
 export function PostsList(props) {
     const [postsInit, setPostsInit] = useState([])
     const [posts, setPosts] = useState([])
+    const [postsDidSet, setPostsDidSet] = useState(false)
     useEffect(()=>{
       let final = [...props.newPosts].concat(postsInit)
       if (final.length !== posts.length) {
@@ -40,15 +41,18 @@ export function PostsList(props) {
     }, [props.newPosts, posts, postsInit])
 
     useEffect(() => {
-      const myCallback = (response, status) => {
-        if (status === 200){
-          setPostsInit(response)
-        } else {
-          alert("Ошибка же")
+      if (postsDidSet === false) {
+        const myCallback = (response, status) => {
+          if (status === 200){
+            setPostsInit(response)
+            setPostsDidSet(true)
+          } else {
+            alert("Ошибка же")
+          }
         }
+        loadPosts(myCallback)
       }
-      loadPosts(myCallback)
-      }, [postsInit])
+      }, [postsInit, postsDidSet, setPostsDidSet])
       return posts.map((post, index)=>{
         return <Post post={post} className='my-5 py-5 border bg-white text-dark' key={`${index}-{item.id}`}/>
       })
