@@ -1,6 +1,5 @@
-import {createPost, loadPosts} from './components'
+import {backendLookup} from './components'
 
 export {
-    loadPosts,
-    createPost
+    backendLookup
 }

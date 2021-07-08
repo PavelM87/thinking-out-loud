@@ -15,7 +15,7 @@ function getCookie(name) {
   return cookieValue;
 }
 
-function lookup(method, endpoint, callback, data) {
+export function backendLookup(method, endpoint, callback, data) {
   let jsonData;
   if (data) {
     jsonData = JSON.stringify(data)
@@ -39,12 +39,4 @@ function lookup(method, endpoint, callback, data) {
     callback({"message": "The request was an error"}, 400)
   }
   xhr.send(jsonData)  
-}
-
-export function createPost(newPost, callback) {
-  lookup("POST", "/posts/create/", callback, {content: newPost})
-}
-
-export function loadPosts(callback) {
-  lookup("GET", "/posts/", callback)
 }
