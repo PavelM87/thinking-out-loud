@@ -59,23 +59,33 @@ export function PostsList(props) {
         apiPostList(handlePostListLookup)
       }
       }, [postsInit, postsDidSet, setPostsDidSet])
+      const handleDidRepost = (newPost) => {
+        const updatePostsInit = [...postsInit]
+        updatePostsInit.unshift(newPost)
+        setPostsInit(updatePostsInit)
+        const updateFinalPosts = [...posts]
+        updateFinalPosts.unshift(posts)
+        setPosts(updateFinalPosts)
+      }
       return posts.map((post, index)=>{
-        return <Post post={post} className='my-5 py-5 border bg-white text-dark' key={`${index}-{item.id}`}/>
+        return <Post 
+        post={post} 
+        didRepost = {handleDidRepost}
+        className='my-5 py-5 border bg-white text-dark' 
+        key={`${index}-{item.id}`}/>
       })
   }
 
 export function ActionBtn(props) {
-    const {post, action} = props
-    const [likes, setLikes] = useState(post.likes ? post.likes : 0)
-    // const [userLike, setUserLike] = useState(post.userLike === true ? true: false)
+    const {post, action, didPerformAction} = props
+    const likes = post.likes ? post.likes : 0
     const className = props.className ? props.className : 'btn btn-primary btn-sm'
     const actionDisplay = action.display ? action.display: 'Action'
 
     const handleActionBackendEvent = (response, status) =>{
       console.log(status, response)
-      if (status === 200) {
-        setLikes(response.likes)
-        // setUserLike(true)
+      if ((status === 200 || status === 201) && didPerformAction) {
+        didPerformAction(response, status)
       }
     }
     const handleClick = (event) => {
@@ -91,22 +101,34 @@ export function ParentPost(props) {
   return post.parent ? <div className='row'>
   <div className='col-11 mx-auto p-3 border rounded'>
   <p className='mb-0 text-muted small'>Repost</p>
-  <Post className={' '} post={post.parent}/>
+  <Post hideActions className={' '} post={post.parent}/>
   </div>
   </div> : null
 }
 export function Post(props) {
-    const {post} = props
+    const {post, didRepost, hideActions} = props
+    const [actionPost, setActionPost] = useState(props.post ? props.post : null)
     const className = props.className ? props.className : 'col-10 mx-auto, col-md-6'
+
+    const handlePerformAction = (newActionPost, status) => {
+      if (status === 200) {
+      setActionPost(newActionPost)
+      } else if (status === 201) {
+        if (didRepost) {
+          didRepost(newActionPost)
+        }
+      }
+    }
+
     return <div className={className}>
       <div>
         <p>{post.id} - {post.content}</p>
         <ParentPost post={post} />
       </div>
-      <div className='btn btn-group'>
-        <ActionBtn post={post} action={{type: "like", display:"Likes"}}/>
-        <ActionBtn post={post} action={{type: "unlike", display:"Unlikes"}}/>
-        <ActionBtn post={post} action={{type: "repost", display:"Repost"}}/>
-      </div>
+      {(actionPost && hideActions !== true) && <div className='btn btn-group'>
+        <ActionBtn post={actionPost} didPerformAction={handlePerformAction} action={{type: "like", display:"Likes"}}/>
+        <ActionBtn post={actionPost} didPerformAction={handlePerformAction} action={{type: "unlike", display:"Unlikes"}}/>
+        <ActionBtn post={actionPost} didPerformAction={handlePerformAction} action={{type: "repost", display:"Repost"}}/>
+      </div>}
     </div>
 }
