@@ -15,14 +15,10 @@ if (appElement) {
     appElement
   );
 }
+const e = React.createElement
 const postsEl = document.getElementById("thinking")
-if (postsEl) {
-  ReactDOM.render(
-    <React.StrictMode>
-      <PostsComponent />
-    </React.StrictMode>,
-    postsEl
-  );
+if (postsEl) { 
+  ReactDOM.render(e(PostsComponent, postsEl.dataset), postsEl);
 }
 
 

@@ -5,6 +5,7 @@ import {apiPostAction, apiPostCreate, apiPostList} from './lookup'
 export function PostsComponent(props) {
   const textAreaRef = React.createRef()
   const [newPosts, setNewPosts] = useState([])
+  const canPost = props.canPost === "false" ? false : true
   const handleBackendUpdate = (response, status) =>{
     // backend api response handler
     let tempNewPosts = [...newPosts]
@@ -24,14 +25,14 @@ export function PostsComponent(props) {
     textAreaRef.current.value = ''
   }
   return <div className={props.className}>
-    <div className='col-12 mb-3'>
+    {canPost === true && <div className='col-12 mb-3'>
       <form onSubmit={handleSubmit}>
         <textarea ref={textAreaRef} required={true} className='form-control'>
         </textarea>
         <button type='submit' className='btn btn-primary my-3'>Post</button>
       </form>
-    </div>
-    <PostsList newPosts={newPosts}/> 
+    </div>}
+    <PostsList newPosts={newPosts} {...props}/> 
   </div>
 }
 
@@ -56,9 +57,9 @@ export function PostsList(props) {
             alert("Ошибка же")
           }
         }
-        apiPostList(handlePostListLookup)
+        apiPostList(props.username, handlePostListLookup)
       }
-      }, [postsInit, postsDidSet, setPostsDidSet])
+      }, [postsInit, postsDidSet, setPostsDidSet, props.username])
       const handleDidRepost = (newPost) => {
         const updatePostsInit = [...postsInit]
         updatePostsInit.unshift(newPost)
