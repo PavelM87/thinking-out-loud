@@ -1,9 +1,14 @@
-import {ActionBtn, Post, PostsList, PostsComponent} from "./components"
+import {PostsComponent} from "./components"
+import {PostCreate} from "./create"
+import {Post} from "./detail"
+import {PostsList} from "./list"
+import {ActionBtn} from "./buttons"
 
 
 export {
     ActionBtn, 
     Post,
+    PostCreate,
     PostsList,
-    PostsComponent
+    PostsComponent,
 }
