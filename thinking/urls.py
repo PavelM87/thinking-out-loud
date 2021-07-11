@@ -20,17 +20,16 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 
 from thoughts.views import (
-    home, post_detail, post_list,
-    post_create, post_delete, post_action
+    posts_list,
+    posts_detail,
+    posts_profile,
 )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', home),
-    path('react/', TemplateView.as_view(template_name='react_dj.html')),
-    path('create-post', post_create),
-    path('posts', post_list),
-    path('posts/<int:post_id>', post_detail),
+    path('', posts_list),
+    path('<int:post_id>', posts_detail),
+    path('profile/<str:username>', posts_profile),
     path('api/posts/', include('thoughts.urls')),
 ]
 
