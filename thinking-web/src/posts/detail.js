@@ -14,7 +14,14 @@ export function ParentPost(props) {
       const {post, didRepost, hideActions} = props
       const [actionPost, setActionPost] = useState(props.post ? props.post : null)
       const className = props.className ? props.className : 'col-10 mx-auto, col-md-6'
-  
+      const path = window.location.pathname
+      const match = path.match(/(?<postid>\d+)/)
+      const urlPostId = match ? match.groups.postid : -1
+      const isDetail = `${post.id}` === `${urlPostId}`
+      const handleLink = (event) => {
+          event.preventDefault()
+          window.location.href = `/${post.id}`
+      }
       const handlePerformAction = (newActionPost, status) => {
         if (status === 200) {
         setActionPost(newActionPost)
@@ -30,10 +37,13 @@ export function ParentPost(props) {
           <p>{post.id} - {post.content}</p>
           <ParentPost post={post} />
         </div>
-        {(actionPost && hideActions !== true) && <div className='btn btn-group'>
-          <ActionBtn post={actionPost} didPerformAction={handlePerformAction} action={{type: "like", display:"Likes"}}/>
-          <ActionBtn post={actionPost} didPerformAction={handlePerformAction} action={{type: "unlike", display:"Unlikes"}}/>
-          <ActionBtn post={actionPost} didPerformAction={handlePerformAction} action={{type: "repost", display:"Repost"}}/>
-        </div>}
+        <div className='btn btn-group'>
+        {(actionPost && hideActions !== true) && <React.Fragment>
+          <ActionBtn post={actionPost} didPerformAction={handlePerformAction} action={{type: "like", display:"Нравится"}}/>
+          <ActionBtn post={actionPost} didPerformAction={handlePerformAction} action={{type: "unlike", display:"Ненравится"}}/>
+          <ActionBtn post={actionPost} didPerformAction={handlePerformAction} action={{type: "repost", display:"Поделиться"}}/>
+        </React.Fragment>}
+          {isDetail === true ? null : <button className="btn btn-outline-primary btn-sm" onClick={handleLink}>Просмотр</button>}
+        </div>
       </div>
   }

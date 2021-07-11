@@ -1,6 +1,8 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
+import {Post} from './detail'
 import {PostsList} from './list'
 import {PostCreate} from './create'
+import {apiPostDetail} from './lookup'
 
 
 export function PostsComponent(props) {
@@ -17,3 +19,23 @@ export function PostsComponent(props) {
   </div>
 }
   
+export function PostDetailComponent(props){
+  const {postId} = props
+  const [didLookup, setDidLookup] = useState(false)
+  const [post, setPost] = useState(null)
+
+  const handleBackendLookup = (response, status) => {
+      if (status === 200) {
+        setPost(response)
+      } else {
+        alert("Произошла ошибка при поиске вашего сообщения")
+      }
+  }
+  useEffect(()=>{
+    if (didLookup === false){
+      apiPostDetail(postId, handleBackendLookup)
+      setDidLookup(true)
+    }
+  },[postId, didLookup, setDidLookup])
+  return post === null ? null : <Post post={post} className={props.className}/>
+}

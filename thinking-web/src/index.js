@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import {PostsComponent} from './posts';
+import {PostsComponent, PostDetailComponent} from './posts';
 import reportWebVitals from './reportWebVitals';
 
 
@@ -20,6 +20,13 @@ const postsEl = document.getElementById("thinking")
 if (postsEl) { 
   ReactDOM.render(e(PostsComponent, postsEl.dataset), postsEl);
 }
+
+const postDetailElements = document.querySelectorAll(".thinking-detail")
+
+postDetailElements.forEach(container=> {
+  ReactDOM.render(
+    e(PostDetailComponent, container.dataset), container);
+})
 
 
 // If you want to start measuring performance in your app, pass a function

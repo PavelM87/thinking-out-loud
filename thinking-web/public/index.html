@@ -30,6 +30,7 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="post-container" ></div>
     <div id="thinking" data-username="admin" data-can-post="false"></div>
     <!--
       This HTML file is a template.
@@ -41,5 +42,18 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+    <script>
+      var path = window.location.pathname
+      var idRegex = /(?<postid>\d+)/
+      var match = path.match(idRegex)
+      if (match) {
+        var postId = match.groups.postid
+        var thinkingEl = document.getElementById("thinking")
+        thinkingEl.className = "d-none"
+        var postEl = `<div class="thinking-detail" data-post-id="${postId}" data-class-name="col-6 mx-auto"></div>`
+        var mainContainer = document.getElementById("post-container")
+        mainContainer.innerHTML = postEl
+      }
+    </script>
   </body>
 </html>
