@@ -1,7 +1,7 @@
 from django.urls import path
 
-from thoughts.views import (
-    home, post_detail, post_list,
+from .views import (
+    post_detail, post_list,
     post_create, post_delete, post_action
 )
 

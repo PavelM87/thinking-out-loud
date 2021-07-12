@@ -30,7 +30,7 @@ urlpatterns = [
     path('', posts_list),
     path('<int:post_id>', posts_detail),
     path('profile/<str:username>', posts_profile),
-    path('api/posts/', include('thoughts.urls')),
+    path('api/posts/', include('thoughts.api.urls')),
 ]
 
 if settings.DEBUG:
