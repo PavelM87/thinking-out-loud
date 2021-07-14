@@ -25,9 +25,18 @@ from thoughts.views import (
     posts_profile,
 )
 
+from accounts.views import (
+    login_view,
+    logout_view,
+    registration_view,
+)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', posts_list),
+    path('login/', login_view),
+    path('logout/', logout_view),
+    path('register/', registration_view),
     path('<int:post_id>', posts_detail),
     path('profile/<str:username>', posts_profile),
     path('api/posts/', include('thoughts.api.urls')),
