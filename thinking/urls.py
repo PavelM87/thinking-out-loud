@@ -16,13 +16,12 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, re_path, include
 from django.views.generic import TemplateView
 
 from thoughts.views import (
     posts_list,
     posts_detail,
-    posts_profile,
 )
 
 from accounts.views import (
@@ -38,7 +37,7 @@ urlpatterns = [
     path('logout/', logout_view),
     path('register/', registration_view),
     path('<int:post_id>', posts_detail),
-    path('profile/<str:username>', posts_profile),
+    re_path(r'profiles?/', include('profiles.urls')),
     path('api/posts/', include('thoughts.api.urls')),
 ]
 

@@ -23,8 +23,6 @@ def posts_list(request, *args, **kwargs):
 def posts_detail(request, post_id, *args, **kwargs):
     return render(request, 'posts/detail.html', context={"post_id": post_id})
 
-def posts_profile(request, username, *args, **kwargs):
-    return render(request, 'posts/profile.html', context={"profile_username": username})
 
 
 def post_create_pure_django(request, *args, **kwargs):

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 
     'thoughts',
     'accounts',
+    'profiles',
 ]
 
 MIDDLEWARE = [
