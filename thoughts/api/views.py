@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.pagination import PageNumberPagination
 
 from ..models import Post
 from ..forms import PostForm
@@ -81,13 +82,19 @@ def post_action(request, *args, **kwargs):
             return Response(serializer.data, status=201)
     return Response({}, status=200)
 
+def get_paginated_queryset_response(qs, request):
+    paginator = PageNumberPagination()
+    paginator.page_size = 20
+    paginated_qs = paginator.paginate_queryset(qs, request)
+    serializer = PostSerializer(paginated_qs, many=True)
+    return paginator.get_paginated_response(serializer.data)
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def post_feed(request, *args, **kwargs):
     user = request.user
     qs = Post.objects.feed(user)
-    serializer = PostSerializer(qs, many=True)
-    return Response(serializer.data, status=200)
+    return get_paginated_queryset_response(qs, request)
 
 @api_view(['GET'])
 def post_list(request, *args, **kwargs):
@@ -96,6 +103,5 @@ def post_list(request, *args, **kwargs):
     if username != None:
         # qs = qs.filter(user__username__iexact=username)
         qs = qs.by_username(username)
-    serializer = PostSerializer(qs, many=True)
-    return Response(serializer.data, status=200)
+    return get_paginated_queryset_response(qs, request)
 

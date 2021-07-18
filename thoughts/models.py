@@ -18,7 +18,7 @@ class PostQuerySet(models.QuerySet):
     def feed(self, user):
         profiles_exists = user.following.exists()
         followed_users_id = []
-        if profiles_exists():
+        if profiles_exists:
             followed_users_id =user.following.values_list("user_id", flat=True) # [x.user.id for x in profiles]
         return self.filter(
             models.Q(user__id__in=followed_users_id) |
