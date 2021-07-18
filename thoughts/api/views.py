@@ -82,6 +82,19 @@ def post_action(request, *args, **kwargs):
     return Response({}, status=200)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def post_feed(request, *args, **kwargs):
+    user = request.user
+    profiles = user.following.all()
+    followed_users_id = []
+    if profiles.exists():
+        followed_users_id = [x.user.id for x in profiles]
+    followed_users_id.append(user.id)
+    qs = Post.objects.filter(user__id__in=followed_users_id).order_by("-timestamp")
+    serializer = PostSerializer(qs, many=True)
+    return Response(serializer.data, status=200)
+
+@api_view(['GET'])
 def post_list(request, *args, **kwargs):
     qs = Post.objects.all()
     username = request.GET.get('username')
