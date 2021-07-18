@@ -38,6 +38,7 @@ urlpatterns = [
     path('register/', registration_view),
     path('<int:post_id>', posts_detail),
     re_path(r'profiles?/', include('profiles.urls')),
+    re_path(r'api/profiles?/', include('profiles.api.urls')),
     path('api/posts/', include('thoughts.api.urls')),
 ]
 
