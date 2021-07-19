@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.conf import settings
 
 from .models import Post
+from profiles.serializers import PublicProfileSerializer
 
 
 class PostActionSerializer(serializers.Serializer):
@@ -17,10 +18,11 @@ class PostActionSerializer(serializers.Serializer):
 
 class PostCreateSerializer(serializers.ModelSerializer):
     likes = serializers.SerializerMethodField(read_only=True)
+    user = PublicProfileSerializer(source="user.profile", read_only=True)
 
     class Meta:
         model = Post
-        fields = ['id', 'content', 'likes']
+        fields = ['user', 'id', 'content', 'likes', 'timestamp']
 
     def get_likes(self, obj):
         return obj.likes.count()
@@ -30,15 +32,29 @@ class PostCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Слишком длинный пост")
         return value
 
+    # def get_user(self, obj):
+    #     return obj.user.id
+
+
 class PostSerializer(serializers.ModelSerializer):
     likes = serializers.SerializerMethodField(read_only=True)
+    user = PublicProfileSerializer(source="user.profile", read_only=True)
     parent = PostCreateSerializer(read_only=True)
 
     class Meta:
         model = Post
-        fields = ['id', 'content', 'likes', 'is_repost', 'parent']
+        fields = [
+            'user', 
+            'id', 
+            'content', 
+            'likes', 
+            'is_repost', 
+            'parent', 
+            'timestamp'
+            ]
 
     def get_likes(self, obj):
         return obj.likes.count()
+
 
     
