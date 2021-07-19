@@ -5,6 +5,7 @@ import {Post} from './detail'
 export function PostsList(props) {
     const [postsInit, setPostsInit] = useState([])
     const [posts, setPosts] = useState([])
+    const [nextUrl, setNextUrl] = useState(null)
     const [postsDidSet, setPostsDidSet] = useState(false)
     useEffect(()=>{
       let final = [...props.newPosts].concat(postsInit)
@@ -17,7 +18,8 @@ export function PostsList(props) {
       if (postsDidSet === false) {
         const handlePostListLookup = (response, status) => {
           if (status === 200){
-            setPostsInit(response)
+            setNextUrl(response.next)
+            setPostsInit(response.results)
             setPostsDidSet(true)
           } else {
             alert("Ошибка же")
@@ -34,11 +36,29 @@ export function PostsList(props) {
         updateFinalPosts.unshift(posts)
         setPosts(updateFinalPosts)
       }
-      return posts.map((post, index)=>{
+      const handleLoadNext = (event) => {
+        event.preventDefault()
+        if (nextUrl != null) {
+          const handleLoadNextResponse = (response, status) => {
+            if (status === 200){
+              setNextUrl(response.next)
+              const newPosts = [...posts].concat(response.results)
+              setPostsInit(newPosts)
+              setPosts(newPosts)
+            } else {
+              alert("Ошибка же")
+            }
+          }
+          apiPostList(props.username, handleLoadNextResponse, nextUrl)
+        }
+      }
+      return <React.Fragment>{posts.map((post, index)=>{
         return <Post 
-        post={post} 
+        post={post}
         didRepost = {handleDidRepost}
         className='my-5 py-5 border bg-white text-dark' 
         key={`${index}-{item.id}`}/>
-      })
+      })}
+      {nextUrl != null && <button onClick={handleLoadNext} className="btn btn-outline-primary">Ещё постов</button>}
+      </React.Fragment>
   }
