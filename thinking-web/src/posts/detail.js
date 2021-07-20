@@ -1,5 +1,8 @@
 import React, {useState} from 'react'
 import {ActionBtn} from './buttons'
+import {UserPicture, UserDisplay} from '../profiles'
+
+
 
 export function ParentPost(props) {
     const {post} = props
@@ -29,18 +32,19 @@ export function ParentPost(props) {
       }
   
       return <div className={className}>
-        {isRepost === true && <div className='mb-2'><span className='small text-muted'>Repost via @{reposter.username}</span></div>}
+        {isRepost === true && 
+        <div className='mb-2'>
+          <span className='small text-muted'>Repost via <UserDisplay user={reposter}/></span>
+        </div>}
         <div className='d-flex'>
         <div className=''>
-          <span className='mx-1 px-3 py-2 rounded-circle bg-warning text-white'>
-            {post.user.username[0]}
-          </span>
+          <UserPicture user={post.user} />
         </div>
         <div className='col-11'>
         <div>
-          <p>{post.user.first_name}{" "}
-              {post.user.last_name}{" "}
-              @{post.user.username}</p>
+          <p>
+            <UserDisplay includeFullName user={post.user} />
+          </p>
           <p>{post.id} - {post.content}</p>
           <ParentPost post={post} reposter={post.user}/>
         </div>
