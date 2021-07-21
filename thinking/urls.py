@@ -20,6 +20,7 @@ from django.urls import path, re_path, include
 from django.views.generic import TemplateView
 
 from thoughts.views import (
+    home,
     posts_list,
     posts_detail,
 )
@@ -31,8 +32,9 @@ from accounts.views import (
 )
 
 urlpatterns = [
+    path('', home),
     path('admin/', admin.site.urls),
-    path('', posts_list),
+    path('global/', posts_list),
     path('login/', login_view),
     path('logout/', logout_view),
     path('register/', registration_view),

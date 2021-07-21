@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+{% if request.user.is_authenticated %}
+
+    <div id="thinking-feed"></div>
+
+{% else %}
+
+    <div id="thinking"></div>
+
+{% endif %}
+
+{% endblock content %}
