@@ -14,6 +14,14 @@ export function apiPostDetail(postId, callback) {
     backendLookup("GET", `/posts/${postId}`, callback)
   }
   
+export function apiPostFeed(callback, nextUrl) {
+  let endpoint = "/posts/feed/"
+  if (nextUrl !== null && nextUrl !== undefined){
+    endpoint = nextUrl.replace("http://localhost:8000/api", "")
+  }
+  backendLookup("GET", endpoint, callback)
+  }
+  
 export function apiPostList(username, callback, nextUrl) {
   let endpoint = "/posts/"
   if (username){

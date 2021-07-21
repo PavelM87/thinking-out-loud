@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import {PostsComponent, PostDetailComponent} from './posts';
+import {FeedComponent, PostsComponent, PostDetailComponent} from './posts';
 import reportWebVitals from './reportWebVitals';
 
 
@@ -16,9 +16,15 @@ if (appElement) {
   );
 }
 const e = React.createElement
+
 const postsEl = document.getElementById("thinking")
 if (postsEl) { 
   ReactDOM.render(e(PostsComponent, postsEl.dataset), postsEl);
+}
+
+const postsFeedEl = document.getElementById("thinking-feed")
+if (postsFeedEl) { 
+  ReactDOM.render(e(FeedComponent, postsFeedEl.dataset), postsFeedEl);
 }
 
 const postDetailElements = document.querySelectorAll(".thinking-detail")

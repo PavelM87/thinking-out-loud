@@ -1,4 +1,4 @@
-import {PostsComponent, PostDetailComponent} from "./components"
+import {FeedComponent, PostsComponent, PostDetailComponent} from "./components"
 import {PostCreate} from "./create"
 import {Post} from "./detail"
 import {PostsList} from "./list"
@@ -11,5 +11,6 @@ export {
     PostCreate,
     PostsList,
     PostsComponent,
-    PostDetailComponent
+    PostDetailComponent,
+    FeedComponent
 }
