@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import { ProfileBadgeComponent } from './profiles/badge';
 import {FeedComponent, PostsComponent, PostDetailComponent} from './posts';
 import reportWebVitals from './reportWebVitals';
 
@@ -32,6 +33,13 @@ const postDetailElements = document.querySelectorAll(".thinking-detail")
 postDetailElements.forEach(container=> {
   ReactDOM.render(
     e(PostDetailComponent, container.dataset), container);
+})
+
+const userProfileBadgeElements = document.querySelectorAll(".thinking-profile-badge")
+
+userProfileBadgeElements.forEach(container=> {
+  ReactDOM.render(
+    e(ProfileBadgeComponent, container.dataset), container);
 })
 
 
