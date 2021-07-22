@@ -32,7 +32,7 @@ def profile_detail_api(request, username, *args, **kwargs):
     if not qs.exists():
         return Response({"detail": "Пользователь не найден"}, status=404)
     profile_obj = qs.first()
-    data = PublicProfileSerializer(instance=profile_obj)
+    data = PublicProfileSerializer(instance=profile_obj, context={"request": request})
     return Response(data.data, status=200)
 
 
