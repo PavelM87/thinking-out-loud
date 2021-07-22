@@ -45,7 +45,7 @@ export function ParentPost(props) {
           <p>
             <UserDisplay includeFullName user={post.user} />
           </p>
-          <p>{post.id} - {post.content}</p>
+          <p>{post.content}</p>
           <ParentPost post={post} reposter={post.user}/>
         </div>
         <div className='btn btn-group px-0'>

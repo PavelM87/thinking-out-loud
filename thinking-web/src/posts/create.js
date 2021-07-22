@@ -22,7 +22,7 @@ export function PostCreate(props){
   }
   return <div className={props.className}>
             <form onSubmit={handleSubmit}>
-              <textarea ref={textAreaRef} required={true} className='form-control'>
+              <textarea ref={textAreaRef} required={true} className='form-control mt-3'>
               </textarea>
               <button type='submit' className='btn btn-primary my-3'>Post</button>
             </form>

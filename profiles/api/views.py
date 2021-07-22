@@ -12,6 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 
 from ..models import Profile
+from ..serializers import PublicProfileSerializer
 
 
 ALLOWED_HOSTS = settings.ALLOWED_HOSTS
@@ -24,6 +25,15 @@ User = get_user_model()
 #     current_user = redirect.user
 #     to_follow_user = 
 #     return Response({}, status=400)
+
+@api_view(['GET'])
+def profile_detail_api(request, username, *args, **kwargs):
+    qs = Profile.objects.filter(user__username=username)
+    if not qs.exists():
+        return Response({"detail": "Пользователь не найден"}, status=404)
+    profile_obj = qs.first()
+    data = PublicProfileSerializer(instance=profile_obj)
+    return Response(data.data, status=200)
 
 
 @api_view(['GET', 'POST'])
